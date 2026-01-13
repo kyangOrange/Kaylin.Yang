@@ -343,22 +343,23 @@ section {
 
 .project-content {
     padding: 1.5rem;
+    background: transparent;
 }
 
-.project-1 .project-content {
-    background: #FFF0F5;
+.project-card.project-1 .project-content {
+    background: #FFF0F5 !important;
 }
 
-.project-2 .project-content {
-    background: #FFFAE8;
+.project-card.project-2 .project-content {
+    background: #FFFAE8 !important;
 }
 
-.project-3 .project-content {
-    background: #E8F8F5;
+.project-card.project-3 .project-content {
+    background: #E8F8F5 !important;
 }
 
-.project-fill-in-blank .project-content {
-    background: #F0F8FF;
+.project-card.project-fill-in-blank .project-content {
+    background: #F0F8FF !important;
 }
 
 .project-content h3 {
