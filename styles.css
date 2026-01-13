@@ -299,7 +299,7 @@ section {
 }
 
 .project-card {
-    background: white;
+    background: var(--primary-color);
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: var(--shadow);
@@ -318,6 +318,21 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
+    background-size: cover;
+    background-position: center;
+}
+
+.fill-in-blank-bg {
+    background-image: url('images/chinese-text-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.fill-in-blank-bg .project-placeholder {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
 }
 
 .project-placeholder {
