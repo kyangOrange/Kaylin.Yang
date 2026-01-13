@@ -1,6 +1,6 @@
 :root {
-    --primary-color: #F0E5FF;
-    --secondary-color: #E4D4FF;
+    --primary-color: #FAF8FF;
+    --secondary-color: #F7F4FF;
     --text-color: #1f2937;
     --text-light: #6b7280;
     --bg-color: #ffffff;
@@ -123,7 +123,7 @@ body {
     align-items: center;
     text-align: center;
     padding: 8rem 2rem 4rem;
-    background: linear-gradient(135deg, #F0E5FF 0%, #E4D4FF 100%);
+    background: linear-gradient(135deg, #FAF8FF 0%, #F7F4FF 100%);
     color: var(--text-color);
     position: relative;
     overflow: hidden;
@@ -343,6 +343,22 @@ section {
 
 .project-content {
     padding: 1.5rem;
+}
+
+.project-1 .project-content {
+    background: #FFF0F5;
+}
+
+.project-2 .project-content {
+    background: #FFFAE8;
+}
+
+.project-3 .project-content {
+    background: #E8F8F5;
+}
+
+.project-fill-in-blank .project-content {
+    background: #F0F8FF;
 }
 
 .project-content h3 {
