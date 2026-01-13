@@ -19,7 +19,7 @@ Welcome to my personal website! This is a modern, responsive portfolio website s
 
 ## 🌐 Deployment
 
-This website is hosted on GitHub Pages and accessible at [kaylin.yang](https://kyangOrange.github.io/Kaylin.Yang/).
+This website is hosted on GitHub Pages and accessible at [kaylin.yang.com](https://kaylin.yang.com).
 
 ## 🛠️ Technologies Used
 
