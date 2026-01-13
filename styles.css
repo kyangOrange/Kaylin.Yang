@@ -1,6 +1,6 @@
 :root {
-    --primary-color: #FAF8FF;
-    --secondary-color: #F7F4FF;
+    --primary-color: #F5F0FF;
+    --secondary-color: #F0EAFF;
     --text-color: #1f2937;
     --text-light: #6b7280;
     --bg-color: #ffffff;
@@ -124,7 +124,7 @@ body {
     align-items: center;
     text-align: center;
     padding: 8rem 2rem 4rem;
-    background: linear-gradient(135deg, #FAF8FF 0%, #F7F4FF 100%);
+    background: linear-gradient(135deg, #F5F0FF 0%, #F0EAFF 100%);
     color: var(--text-color);
     position: relative;
     overflow: hidden;
@@ -349,19 +349,19 @@ section {
 }
 
 .project-card.project-1 .project-content {
-    background: #FFF0F5 !important;
+    background: #FFF8FA !important;
 }
 
 .project-card.project-2 .project-content {
-    background: #FFFAE8 !important;
+    background: #FFFDF5 !important;
 }
 
 .project-card.project-3 .project-content {
-    background: #E8F8F5 !important;
+    background: #F5FCFA !important;
 }
 
 .project-card.project-fill-in-blank .project-content {
-    background: #F0F8FF !important;
+    background: #F8FCFF !important;
 }
 
 .project-content h3 {
