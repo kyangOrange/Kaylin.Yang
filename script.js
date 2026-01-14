@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function generateWavyClipPolygon({ pointsPerSide = 32, maxInsetPct = 6 } = {}) {
         const n = pointsPerSide + 1; // include endpoints
         const randInset = () => Math.random() * maxInsetPct;
-        const makeSideInsets = () => smoothArray(Array.from({ length: n }, randInset), 6);
+        const makeSideInsets = () => smoothArray(Array.from({ length: n }, randInset), 8);
 
         const top = makeSideInsets();
         const right = makeSideInsets();
