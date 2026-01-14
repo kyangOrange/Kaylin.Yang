@@ -445,7 +445,7 @@ section {
     background: rgba(255, 255, 255, 0.95);
     color: var(--text-light);
     padding: 0.5rem 0.75rem;
-    border-radius: 0.25rem;
+    border-radius: 1rem;
     font-size: 0.85rem;
     white-space: nowrap;
     opacity: 0;
