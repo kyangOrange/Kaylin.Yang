@@ -37,10 +37,10 @@ let lastScroll = 0;
 window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
     
-    if (currentScroll > 100) {
-        navbar.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+    if (currentScroll > 50) {
+        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
     } else {
-        navbar.style.boxShadow = '0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
     }
     
     lastScroll = currentScroll;
@@ -205,7 +205,7 @@ const textFadeObserver = new IntersectionObserver((entries) => {
 
 // Observe text elements for fade-in
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.about-text p, .hero-subtitle, .hero-description, .contact-description, .project-content p, .skill-card li').forEach(el => {
+    document.querySelectorAll('.hero-subtitle, .hero-description, .contact-description, .project-content p, .skill-card li').forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';
         el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
@@ -342,4 +342,42 @@ document.addEventListener('DOMContentLoaded', function() {
             closePopup();
         }, 0);
     });
+});
+
+// About section paragraph navigation
+document.addEventListener('DOMContentLoaded', function() {
+    const paragraphs = document.querySelectorAll('.about-paragraph');
+    const nextBtn = document.getElementById('aboutNextBtn');
+    let currentIndex = 0;
+    
+    // Function to show paragraph at index
+    function showParagraph(index) {
+        paragraphs.forEach((para, i) => {
+            if (i === index) {
+                para.classList.add('active');
+            } else {
+                para.classList.remove('active');
+            }
+        });
+        
+        // Hide button on last paragraph
+        if (index === paragraphs.length - 1) {
+            nextBtn.style.display = 'none';
+        } else {
+            nextBtn.style.display = 'block';
+        }
+    }
+    
+    // Initialize: show first paragraph
+    showParagraph(0);
+    
+    // Next button click handler
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+            if (currentIndex < paragraphs.length - 1) {
+                currentIndex++;
+                showParagraph(currentIndex);
+            }
+        });
+    }
 });
