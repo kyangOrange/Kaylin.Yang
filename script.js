@@ -236,13 +236,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function generateRandomBorderRadius() {
         const values = [];
         for (let i = 0; i < 4; i++) {
-            // Range: 25-50% ensures all curves, no straight edges
-            values.push(Math.floor(Math.random() * 25) + 25 + '%'); // 25-50%
+            // Range: 40-50% ensures all curves, no straight edges
+            values.push(Math.floor(Math.random() * 10) + 40 + '%'); // 40-50%
         }
         const values2 = [];
         for (let i = 0; i < 4; i++) {
-            // Range: 25-50% ensures all curves, no straight edges
-            values2.push(Math.floor(Math.random() * 25) + 25 + '%'); // 25-50%
+            // Range: 40-50% ensures all curves, no straight edges
+            values2.push(Math.floor(Math.random() * 10) + 40 + '%'); // 40-50%
         }
         return `${values[0]} ${values[1]} ${values[2]} ${values[3]} / ${values2[0]} ${values2[1]} ${values2[2]} ${values2[3]}`;
     }
@@ -313,12 +313,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.appendChild(popup);
             currentPopup = popup;
             
-            // Show popup with animation - start as rectangle, then morph to random irregular shape
+            // Show popup with animation - start as rectangle, then expand and morph to random irregular shape
+            popup.classList.add('show');
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
+                    popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, border-radius 0.5s ease-out, transform 0.5s ease-out';
                     popup.style.borderRadius = randomBorderRadius;
-                    popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, border-radius 0.8s ease-out, transform 0.3s ease';
-                    popup.classList.add('show');
                 });
             });
         });
