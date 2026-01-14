@@ -132,7 +132,6 @@ body {
 
 .hero-content {
     max-width: 800px;
-    animation: fadeInUp 1s ease;
 }
 
 .hero-title {
@@ -140,6 +139,7 @@ body {
     font-weight: 800;
     margin-bottom: 1rem;
     line-height: 1.2;
+    min-height: 1.2em;
 }
 
 .highlight {
@@ -231,6 +231,7 @@ section {
     text-align: center;
     margin-bottom: 3rem;
     color: var(--text-color);
+    min-height: 1.2em;
 }
 
 /* About Section */
@@ -303,6 +304,7 @@ section {
 }
 
 .project-card {
+    position: relative;
     background: var(--primary-color);
     border-radius: 1rem;
     overflow: hidden;
@@ -376,6 +378,42 @@ section {
 .project-content p {
     color: var(--text-light);
     margin-bottom: 1rem;
+}
+
+.project-description {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.project-description:hover {
+    opacity: 0.8;
+}
+
+.project-description-popup {
+    position: absolute;
+    background: white;
+    padding: 2rem 2.5rem;
+    border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    max-width: 400px;
+    min-width: 250px;
+    width: max-content;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, border-radius 0.6s ease-out;
+    transform: translateY(-10px) scale(0.8);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--text-light);
+    pointer-events: auto;
+    box-sizing: border-box;
+}
+
+.project-description-popup.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
 }
 
 .project-links {
