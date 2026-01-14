@@ -423,7 +423,13 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.className = 'project-description-popup';
             popup.setAttribute('role', 'dialog');
             popup.setAttribute('aria-label', 'Project description');
-            popup.textContent = fullDescription;
+            // Convert text to paragraphs with extra spacing
+            const paragraphs = fullDescription.split('\n\n').filter(p => p.trim());
+            paragraphs.forEach((para, index) => {
+                const p = document.createElement('p');
+                p.textContent = para.trim();
+                popup.appendChild(p);
+            });
             
             // Create close button
             const closeBtn = document.createElement('button');
