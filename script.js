@@ -314,15 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
             currentPopup = popup;
             
             // Show popup with animation - start small, then expand to full size
-            // First make it visible (but still small)
-            popup.style.visibility = 'visible';
-            popup.style.opacity = '0';
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    // Now add show class to trigger size transition
-                    popup.classList.add('show');
-                });
-            });
+            popup.classList.add('show');
         });
     });
     
