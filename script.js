@@ -395,12 +395,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update index
             currentIndex = (currentIndex + 1) % paragraphs.length;
             
-            // Use requestAnimationFrame to ensure smooth transition
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    paragraphs[currentIndex].classList.add('active');
-                });
-            });
+            // Wait for transition to complete (500ms) before showing next paragraph
+            setTimeout(() => {
+                paragraphs[currentIndex].classList.add('active');
+            }, 500);
         });
     }
 });
