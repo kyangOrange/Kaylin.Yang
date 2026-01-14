@@ -491,9 +491,9 @@ section {
 .project-description-popup.show {
     opacity: 1;
     visibility: visible;
-    width: 40vw;
-    height: 40vh;
-    padding: 2rem 2.5rem;
+    width: 60vw;
+    height: 60vh;
+    padding: 2.5rem 3rem;
 }
 
 .project-links {
