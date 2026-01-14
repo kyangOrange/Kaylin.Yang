@@ -252,6 +252,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentPopup) {
             const popup = currentPopup;
             popupToDescription.delete(popup);
+            // Remove border-radius transition so it doesn't morph back to oval
+            popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease';
             popup.classList.remove('show');
             // Match CSS transition duration (0.3s = 300ms)
             setTimeout(() => {
@@ -308,10 +310,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.appendChild(popup);
             currentPopup = popup;
             
-            // Show popup with animation - start as square, then morph to random irregular shape
+            // Show popup with animation - start as rectangle, then morph to random irregular shape
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     popup.style.borderRadius = randomBorderRadius;
+                    popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, border-radius 0.8s ease-out, transform 0.3s ease';
                     popup.classList.add('show');
                 });
             });
