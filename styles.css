@@ -244,11 +244,51 @@ section {
     margin: 0 auto;
 }
 
-.about-text p {
+.about-text {
+    min-height: 150px;
+    position: relative;
+}
+
+.about-paragraph {
     font-size: 1.1rem;
     line-height: 1.8;
     margin-bottom: 1.5rem;
     color: var(--text-light);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    position: absolute;
+    width: 100%;
+}
+
+.about-paragraph.active {
+    opacity: 1;
+    visibility: visible;
+    position: relative;
+}
+
+.about-next-btn {
+    margin-top: 2rem;
+    padding: 0.75rem 2rem;
+    background: #4908C2;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', monospace;
+}
+
+.about-next-btn:hover {
+    background: #3a06a0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(73, 8, 194, 0.3);
+}
+
+.about-next-btn:active {
+    transform: translateY(0);
 }
 
 /* Skills Section */
