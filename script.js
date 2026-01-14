@@ -81,6 +81,9 @@ const observer = new IntersectionObserver((entries) => {
         if (entry.isIntersecting) {
             entry.target.style.opacity = '1';
             entry.target.style.transform = 'translateY(0)';
+        } else {
+            entry.target.style.opacity = '0';
+            entry.target.style.transform = 'translateY(20px)';
         }
     });
 }, observerOptions);
@@ -199,6 +202,9 @@ const textFadeObserver = new IntersectionObserver((entries) => {
         if (entry.isIntersecting) {
             entry.target.style.opacity = '1';
             entry.target.style.transform = 'translateY(0)';
+        } else {
+            entry.target.style.opacity = '0';
+            entry.target.style.transform = 'translateY(20px)';
         }
     });
 }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
