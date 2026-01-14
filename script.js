@@ -428,7 +428,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const paragraphs = fullDescription.split('\n\n').filter(p => p.trim());
             paragraphs.forEach((para, index) => {
                 const p = document.createElement('p');
-                p.innerHTML = para.trim(); // Use innerHTML to preserve <strong> tags
+                let content = para.trim();
+                // Add line break after <strong> tags that end with colon
+                content = content.replace(/<strong>([^<]+):<\/strong>/g, '<strong>$1:</strong><br>');
+                p.innerHTML = content; // Use innerHTML to preserve <strong> tags
                 popup.appendChild(p);
             });
             
