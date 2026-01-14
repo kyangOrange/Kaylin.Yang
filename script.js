@@ -252,10 +252,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentPopup) {
             const popup = currentPopup;
             popupToDescription.delete(popup);
-            // Lock border-radius and transform scale at current values to prevent any shrinking/morphing
-            const currentBorderRadius = popup.style.borderRadius || window.getComputedStyle(popup).borderRadius;
-            popup.style.borderRadius = currentBorderRadius; // Lock border-radius
-            popup.style.transform = 'translate(-50%, -50%) scale(1)'; // Lock scale at 1 (full size)
+            // Lock clip-path at current value to prevent any morphing
+            const currentClipPath = popup.style.clipPath || window.getComputedStyle(popup).clipPath;
+            popup.style.clipPath = currentClipPath; // Lock clip-path
             popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
             popup.classList.remove('show');
             // Match CSS transition duration (0.3s = 300ms)
@@ -293,8 +292,8 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.className = 'project-description-popup';
             popup.textContent = fullDescription;
             
-            // Generate random irregular border-radius (will be applied after initial render)
-            const randomBorderRadius = generateRandomBorderRadius();
+            // Generate random wavy clip-path (will be applied after initial render)
+            const randomClipPath = generateRandomWavyClipPath();
             
             // Set background color based on project card
             if (projectCard.classList.contains('project-1')) {
