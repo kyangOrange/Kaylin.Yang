@@ -249,10 +249,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // "Curves along every edge" via a high-point polygon. Many small segments read as smooth curves.
     // Note: clip-path can only clip within the element's box, so this creates subtle inward waves along the edges.
-    function generateWavyClipPolygon({ pointsPerSide = 28, maxInsetPct = 12 } = {}) {
+    // Generate initial rectangular clip-path with same number of points
+    function generateRectangularClipPolygon({ pointsPerSide = 32 } = {}) {
+        const n = pointsPerSide + 1;
+        const pts = [];
+        
+        // Top: x 0 -> 100, y = 0
+        for (let i = 0; i < n; i++) {
+            const x = (i / pointsPerSide) * 100;
+            pts.push(`${x.toFixed(2)}% 0%`);
+        }
+        
+        // Right: y 0 -> 100, x = 100
+        for (let i = 1; i < n; i++) {
+            const y = (i / pointsPerSide) * 100;
+            pts.push(`100% ${y.toFixed(2)}%`);
+        }
+        
+        // Bottom: x 100 -> 0, y = 100
+        for (let i = pointsPerSide - 1; i >= 0; i--) {
+            const x = (i / pointsPerSide) * 100;
+            pts.push(`${x.toFixed(2)}% 100%`);
+        }
+        
+        // Left: y 100 -> 0, x = 0
+        for (let i = pointsPerSide - 1; i > 0; i--) {
+            const y = (i / pointsPerSide) * 100;
+            pts.push(`0% ${y.toFixed(2)}%`);
+        }
+        
+        return `polygon(${pts.join(', ')})`;
+    }
+    
+    function generateWavyClipPolygon({ pointsPerSide = 32, maxInsetPct = 6 } = {}) {
         const n = pointsPerSide + 1; // include endpoints
         const randInset = () => Math.random() * maxInsetPct;
-        const makeSideInsets = () => smoothArray(Array.from({ length: n }, randInset), 4);
+        const makeSideInsets = () => smoothArray(Array.from({ length: n }, randInset), 6);
 
         const top = makeSideInsets();
         const right = makeSideInsets();
@@ -378,9 +410,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 popup.classList.add('show');
             });
 
+            // Generate rectangular clip-path with same number of points for smooth transition
+            const rectangularClip = generateRectangularClipPolygon({ pointsPerSide: 32 });
+            popup.style.clipPath = rectangularClip;
+            
             // After the rectangle expansion finishes, morph the rectangle edges into smooth random curves on all sides.
-            // Match CSS duration for width/height/padding/border-radius (1.2s).
-            const wavyClip = generateWavyClipPolygon({ pointsPerSide: 32, maxInsetPct: 12 });
+            const wavyClip = generateWavyClipPolygon({ pointsPerSide: 32, maxInsetPct: 6 });
             setTimeout(() => {
                 if (currentPopup !== popup) return;
                 popup.style.clipPath = wavyClip;
