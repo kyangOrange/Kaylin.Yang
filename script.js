@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // "Curves along every edge" via a high-point polygon. Many small segments read as smooth curves.
     // Note: clip-path can only clip within the element's box, so this creates subtle inward waves along the edges.
-    function generateWavyClipPolygon({ pointsPerSide = 28, maxInsetPct = 10 } = {}) {
+    function generateWavyClipPolygon({ pointsPerSide = 28, maxInsetPct = 12 } = {}) {
         const n = pointsPerSide + 1; // include endpoints
         const randInset = () => Math.random() * maxInsetPct;
         const makeSideInsets = () => smoothArray(Array.from({ length: n }, randInset), 4);
@@ -380,11 +380,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // After the rectangle expansion finishes, morph the rectangle edges into smooth random curves on all sides.
             // Match CSS duration for width/height/padding/border-radius (1.2s).
-            const wavyClip = generateWavyClipPolygon({ pointsPerSide: 32, maxInsetPct: 10 });
-            popup.style.setProperty('--popup-wavy-clip', wavyClip);
+            const wavyClip = generateWavyClipPolygon({ pointsPerSide: 32, maxInsetPct: 12 });
             setTimeout(() => {
                 if (currentPopup !== popup) return;
-                popup.classList.add('wavy');
+                popup.style.clipPath = wavyClip;
             }, 1250);
         });
     });
