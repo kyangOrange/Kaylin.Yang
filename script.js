@@ -317,8 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.classList.add('show');
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, border-radius 0.5s ease-out, width 0.5s ease-out, height 0.5s ease-out, padding 0.5s ease-out';
-                    popup.style.borderRadius = randomBorderRadius;
+                    popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, width 0.5s ease-out, height 0.5s ease-out, padding 0.5s ease-out';
                 });
             });
         });

@@ -471,14 +471,14 @@ section {
     padding: 1.5rem 2rem;
     border-radius: 1rem;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    width: 10vw;
-    height: 10vh;
+    width: 5vw;
+    height: 5vh;
     max-width: 1400px;
     max-height: 800px;
     z-index: 999;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease, width 0.5s ease-out, height 0.5s ease-out, border-radius 0.5s ease-out, padding 0.5s ease-out;
+    transition: opacity 0.3s ease, visibility 0.3s ease, width 0.5s ease-out, height 0.5s ease-out, padding 0.5s ease-out;
     font-size: 1.1rem;
     line-height: 1.8;
     color: var(--text-light);
