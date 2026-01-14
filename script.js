@@ -231,6 +231,66 @@ document.addEventListener('DOMContentLoaded', function() {
     const projectDescriptions = document.querySelectorAll('.project-description');
     let currentPopup = null;
     const popupToDescription = new WeakMap();
+
+    function smoothArray(values, passes = 3) {
+        let arr = values.slice();
+        for (let p = 0; p < passes; p++) {
+            const next = arr.slice();
+            for (let i = 0; i < arr.length; i++) {
+                const prev = arr[Math.max(0, i - 1)];
+                const cur = arr[i];
+                const nxt = arr[Math.min(arr.length - 1, i + 1)];
+                next[i] = (prev + cur + nxt) / 3;
+            }
+            arr = next;
+        }
+        return arr;
+    }
+
+    // "Curves along every edge" via a high-point polygon. Many small segments read as smooth curves.
+    // Note: clip-path can only clip within the element's box, so this creates subtle inward waves along the edges.
+    function generateWavyClipPolygon({ pointsPerSide = 28, maxInsetPct = 10 } = {}) {
+        const n = pointsPerSide + 1; // include endpoints
+        const randInset = () => Math.random() * maxInsetPct;
+        const makeSideInsets = () => smoothArray(Array.from({ length: n }, randInset), 4);
+
+        const top = makeSideInsets();
+        const right = makeSideInsets();
+        const bottom = makeSideInsets();
+        const left = makeSideInsets();
+
+        const pts = [];
+
+        // Top: x 0 -> 100, y inset
+        for (let i = 0; i < n; i++) {
+            const x = (i / pointsPerSide) * 100;
+            const y = Math.max(0, Math.min(maxInsetPct, top[i]));
+            pts.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
+        }
+
+        // Right: y 0 -> 100, x = 100 - inset
+        for (let i = 1; i < n; i++) {
+            const y = (i / pointsPerSide) * 100;
+            const x = 100 - Math.max(0, Math.min(maxInsetPct, right[i]));
+            pts.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
+        }
+
+        // Bottom: x 100 -> 0, y = 100 - inset
+        for (let i = pointsPerSide - 1; i >= 0; i--) {
+            const x = (i / pointsPerSide) * 100;
+            const y = 100 - Math.max(0, Math.min(maxInsetPct, bottom[i]));
+            pts.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
+        }
+
+        // Left: y 100 -> 0, x = inset
+        for (let i = pointsPerSide - 1; i > 0; i--) {
+            const y = (i / pointsPerSide) * 100;
+            const x = Math.max(0, Math.min(maxInsetPct, left[i]));
+            pts.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
+        }
+
+        return `polygon(${pts.join(', ')})`;
+    }
     
     // Function to generate random irregular border-radius (curves everywhere, no vertical lines, not too big)
     // Function to generate smooth border-radius that creates smooth curves (not oval)
@@ -253,9 +313,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentPopup) {
             const popup = currentPopup;
             popupToDescription.delete(popup);
-            // Lock border-radius at current value to prevent any morphing
-            const currentBorderRadius = popup.style.borderRadius || window.getComputedStyle(popup).borderRadius;
-            popup.style.borderRadius = currentBorderRadius; // Lock border-radius
+            // Lock clip-path at current value to prevent any morphing on close
+            const currentClipPath = popup.style.clipPath || window.getComputedStyle(popup).clipPath;
+            popup.style.clipPath = currentClipPath; // Lock clip-path
             popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
             popup.classList.remove('show');
             // Match CSS transition duration (0.3s = 300ms)
@@ -311,7 +371,21 @@ document.addEventListener('DOMContentLoaded', function() {
             currentPopup = popup;
             
             // Show popup with animation - dot expands to rectangle
-            popup.classList.add('show');
+            // Make visible first, then trigger size change
+            popup.style.visibility = 'visible';
+            popup.style.opacity = '1';
+            requestAnimationFrame(() => {
+                popup.classList.add('show');
+            });
+
+            // After the rectangle expansion finishes, morph the rectangle edges into smooth random curves on all sides.
+            // Match CSS duration for width/height/padding/border-radius (1.2s).
+            const wavyClip = generateWavyClipPolygon({ pointsPerSide: 32, maxInsetPct: 10 });
+            popup.style.setProperty('--popup-wavy-clip', wavyClip);
+            setTimeout(() => {
+                if (currentPopup !== popup) return;
+                popup.classList.add('wavy');
+            }, 1250);
         });
     });
     
