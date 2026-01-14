@@ -247,81 +247,117 @@ document.addEventListener('DOMContentLoaded', function() {
         return arr;
     }
 
-    // "Curves along every edge" via a high-point polygon. Many small segments read as smooth curves.
-    // Note: clip-path can only clip within the element's box, so this creates subtle inward waves along the edges.
-    // Generate initial rectangular clip-path with same number of points
-    function generateRectangularClipPolygon({ pointsPerSide = 32 } = {}) {
-        const n = pointsPerSide + 1;
-        const pts = [];
-        
-        // Top: x 0 -> 100, y = 0
-        for (let i = 0; i < n; i++) {
-            const x = (i / pointsPerSide) * 100;
-            pts.push(`${x.toFixed(2)}% 0%`);
-        }
-        
-        // Right: y 0 -> 100, x = 100
-        for (let i = 1; i < n; i++) {
-            const y = (i / pointsPerSide) * 100;
-            pts.push(`100% ${y.toFixed(2)}%`);
-        }
-        
-        // Bottom: x 100 -> 0, y = 100
-        for (let i = pointsPerSide - 1; i >= 0; i--) {
-            const x = (i / pointsPerSide) * 100;
-            pts.push(`${x.toFixed(2)}% 100%`);
-        }
-        
-        // Left: y 100 -> 0, x = 0
-        for (let i = pointsPerSide - 1; i > 0; i--) {
-            const y = (i / pointsPerSide) * 100;
-            pts.push(`0% ${y.toFixed(2)}%`);
-        }
-        
-        return `polygon(${pts.join(', ')})`;
+    // SVG blob generator (all-curves, no straight edges).
+    // We render an SVG <path> as the popup background and keep text inside a safe inset area.
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+
+    function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
     }
-    
-    function generateWavyClipPolygon({ pointsPerSide = 32, maxInsetPct = 4 } = {}) {
-        const n = pointsPerSide + 1; // include endpoints
-        const randInset = () => Math.random() * maxInsetPct;
-        const makeSideInsets = () => smoothArray(Array.from({ length: n }, randInset), 10);
 
-        const top = makeSideInsets();
-        const right = makeSideInsets();
-        const bottom = makeSideInsets();
-        const left = makeSideInsets();
+    function clamp(v, min, max) {
+        return Math.max(min, Math.min(max, v));
+    }
 
-        const pts = [];
+    function createBlobParams() {
+        // Use a few low-frequency sine waves -> long smooth curves, no sharp corners.
+        return {
+            base: 44,
+            a1: 3 + Math.random() * 3,
+            a2: 2 + Math.random() * 2.5,
+            a3: 1 + Math.random() * 2,
+            p1: Math.random() * Math.PI * 2,
+            p2: Math.random() * Math.PI * 2,
+            p3: Math.random() * Math.PI * 2
+        };
+    }
 
-        // Top: x 0 -> 100, y inset
+    function radiiFromParams(n, params) {
+        const radii = new Array(n);
         for (let i = 0; i < n; i++) {
-            const x = (i / pointsPerSide) * 100;
-            const y = Math.max(0, Math.min(maxInsetPct, top[i]));
-            pts.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
+            const theta = (i / n) * Math.PI * 2;
+            const r =
+                params.base +
+                params.a1 * Math.sin(theta + params.p1) +
+                params.a2 * Math.sin(2 * theta + params.p2) +
+                params.a3 * Math.sin(3 * theta + params.p3);
+            // Keep inside viewBox (0..100): center=50, so radius max must be <= 49.
+            radii[i] = clamp(r, 35, 49);
+        }
+        return radii;
+    }
+
+    function pointsFromRadii(radii, cx = 50, cy = 50) {
+        const n = radii.length;
+        const pts = new Array(n);
+        for (let i = 0; i < n; i++) {
+            const theta = (i / n) * Math.PI * 2;
+            const r = radii[i];
+            pts[i] = {
+                x: cx + r * Math.cos(theta),
+                y: cy + r * Math.sin(theta)
+            };
+        }
+        return pts;
+    }
+
+    // Closed Catmull–Rom spline -> cubic Beziers (smooth corners).
+    function pathFromPoints(points) {
+        const n = points.length;
+        const p = (i) => points[(i + n) % n];
+        const start = points[0];
+        let d = `M ${start.x.toFixed(2)} ${start.y.toFixed(2)}`;
+
+        for (let i = 0; i < n; i++) {
+            const p0 = p(i - 1);
+            const p1 = p(i);
+            const p2 = p(i + 1);
+            const p3 = p(i + 2);
+
+            const c1x = p1.x + (p2.x - p0.x) / 6;
+            const c1y = p1.y + (p2.y - p0.y) / 6;
+            const c2x = p2.x - (p3.x - p1.x) / 6;
+            const c2y = p2.y - (p3.y - p1.y) / 6;
+
+            d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
         }
 
-        // Right: y 0 -> 100, x = 100 - inset
-        for (let i = 1; i < n; i++) {
-            const y = (i / pointsPerSide) * 100;
-            const x = 100 - Math.max(0, Math.min(maxInsetPct, right[i]));
-            pts.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
+        d += ' Z';
+        return d;
+    }
+
+    function createBlobPathD(n, params) {
+        const radii = radiiFromParams(n, params);
+        const pts = pointsFromRadii(radii);
+        return pathFromPoints(pts);
+    }
+
+    function animateBlobPaths(pathEls, toParams, durationMs = 900) {
+        const n = 64;
+        const fromParams = { base: 44, a1: 0, a2: 0, a3: 0, p1: 0, p2: 0, p3: 0 };
+        const start = performance.now();
+
+        function setAll(d) {
+            for (const el of pathEls) el.setAttribute('d', d);
         }
 
-        // Bottom: x 100 -> 0, y = 100 - inset
-        for (let i = pointsPerSide - 1; i >= 0; i--) {
-            const x = (i / pointsPerSide) * 100;
-            const y = 100 - Math.max(0, Math.min(maxInsetPct, bottom[i]));
-            pts.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
+        function frame(now) {
+            const t = clamp((now - start) / durationMs, 0, 1);
+            const e = easeOutCubic(t);
+            const cur = {
+                base: fromParams.base + (toParams.base - fromParams.base) * e,
+                a1: fromParams.a1 + (toParams.a1 - fromParams.a1) * e,
+                a2: fromParams.a2 + (toParams.a2 - fromParams.a2) * e,
+                a3: fromParams.a3 + (toParams.a3 - fromParams.a3) * e,
+                p1: toParams.p1,
+                p2: toParams.p2,
+                p3: toParams.p3
+            };
+            setAll(createBlobPathD(n, cur));
+            if (t < 1) requestAnimationFrame(frame);
         }
 
-        // Left: y 100 -> 0, x = inset
-        for (let i = pointsPerSide - 1; i > 0; i--) {
-            const y = (i / pointsPerSide) * 100;
-            const x = Math.max(0, Math.min(maxInsetPct, left[i]));
-            pts.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
-        }
-
-        return `polygon(${pts.join(', ')})`;
+        requestAnimationFrame(frame);
     }
     
     // Function to generate random irregular border-radius (curves everywhere, no vertical lines, not too big)
@@ -345,9 +381,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentPopup) {
             const popup = currentPopup;
             popupToDescription.delete(popup);
-            // Lock clip-path at current value to prevent any morphing on close
-            const currentClipPath = popup.style.clipPath || window.getComputedStyle(popup).clipPath;
-            popup.style.clipPath = currentClipPath; // Lock clip-path
+            // Restore body scrolling
+            document.body.style.overflow = '';
             popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
             popup.classList.remove('show');
             // Match CSS transition duration (0.3s = 300ms)
@@ -383,17 +418,59 @@ document.addEventListener('DOMContentLoaded', function() {
             // Create new popup
             const popup = document.createElement('div');
             popup.className = 'project-description-popup';
-            popup.textContent = fullDescription;
+            popup.setAttribute('role', 'dialog');
+            popup.setAttribute('aria-label', 'Project description');
+
+            // Build structure: SVG blob background + text clipped INSIDE the blob.
+            const svg = document.createElementNS(SVG_NS, 'svg');
+            svg.setAttribute('viewBox', '0 0 100 100');
+            svg.setAttribute('preserveAspectRatio', 'none');
+            svg.classList.add('project-description-popup__blob');
+
+            const defs = document.createElementNS(SVG_NS, 'defs');
+            const clipPath = document.createElementNS(SVG_NS, 'clipPath');
+            const clipId = `popupBlobClip-${Math.random().toString(36).slice(2)}`;
+            clipPath.setAttribute('id', clipId);
+            clipPath.setAttribute('clipPathUnits', 'userSpaceOnUse');
+
+            const clipPathPath = document.createElementNS(SVG_NS, 'path');
+            clipPath.appendChild(clipPathPath);
+            defs.appendChild(clipPath);
+            svg.appendChild(defs);
+
+            const fillPath = document.createElementNS(SVG_NS, 'path');
+            fillPath.classList.add('project-description-popup__blob-path');
+            svg.appendChild(fillPath);
+
+            // Safe inset for text so it stays away from the wavy edges.
+            // Also clipped by blob so it can never spill outside visually.
+            const fo = document.createElementNS(SVG_NS, 'foreignObject');
+            fo.classList.add('project-description-popup__fo');
+            fo.setAttribute('x', '16');
+            fo.setAttribute('y', '16');
+            fo.setAttribute('width', '68');
+            fo.setAttribute('height', '68');
+            fo.setAttribute('clip-path', `url(#${clipId})`);
+
+            const foDiv = document.createElement('div');
+            foDiv.className = 'project-description-popup__content';
+            foDiv.textContent = fullDescription;
+            // Ensure font-size is applied directly - use pixels for precise control
+            foDiv.style.fontSize = '10px';
+            fo.appendChild(foDiv);
+            svg.appendChild(fo);
+
+            popup.appendChild(svg);
             
             // Set background color based on project card
             if (projectCard.classList.contains('project-1')) {
-                popup.style.background = '#FFF8FA';
+                popup.style.setProperty('--popup-fill', '#FFF8FA');
             } else if (projectCard.classList.contains('project-2')) {
-                popup.style.background = '#FFFDF5';
+                popup.style.setProperty('--popup-fill', '#FFFDF5');
             } else if (projectCard.classList.contains('project-3')) {
-                popup.style.background = '#F5FCFA';
+                popup.style.setProperty('--popup-fill', '#F5FCFA');
             } else if (projectCard.classList.contains('project-fill-in-blank')) {
-                popup.style.background = '#F8FCFF';
+                popup.style.setProperty('--popup-fill', '#F8FCFF');
             }
             
             // Store reference
@@ -402,24 +479,21 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.appendChild(popup);
             currentPopup = popup;
             
-            // Show popup with animation - dot expands to rectangle
+            // Initialize as a near-circle, then morph into a random blob while expanding.
+            const startD = createBlobPathD(64, { base: 44, a1: 0, a2: 0, a3: 0, p1: 0, p2: 0, p3: 0 });
+            const targetParams = createBlobParams();
+            fillPath.setAttribute('d', startD);
+            clipPathPath.setAttribute('d', startD);
+            
+            // Show popup with animation - dot expands to blob
             // Make visible first, then trigger size change
             popup.style.visibility = 'visible';
             popup.style.opacity = '1';
             requestAnimationFrame(() => {
                 popup.classList.add('show');
+                // Morph path (smooth curves) while it expands.
+                animateBlobPaths([fillPath, clipPathPath], targetParams, 900);
             });
-
-            // Generate rectangular clip-path with same number of points for smooth transition
-            const rectangularClip = generateRectangularClipPolygon({ pointsPerSide: 32 });
-            popup.style.clipPath = rectangularClip;
-            
-            // After the rectangle expansion finishes, morph the rectangle edges into smooth random curves on all sides.
-            const wavyClip = generateWavyClipPolygon({ pointsPerSide: 32, maxInsetPct: 5 });
-            setTimeout(() => {
-                if (currentPopup !== popup) return;
-                popup.style.clipPath = wavyClip;
-            }, 1250);
 
         });
     });
