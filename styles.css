@@ -466,7 +466,7 @@ section {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.8);
+    transform: translate(-50%, -50%) scale(0.3);
     background: white;
     padding: 3rem 4rem;
     border-radius: 1rem;
@@ -478,7 +478,7 @@ section {
     z-index: 999;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.5s ease-out;
     font-size: 1.1rem;
     line-height: 1.8;
     color: var(--text-light);
