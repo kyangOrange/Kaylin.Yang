@@ -232,17 +232,17 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentPopup = null;
     const popupToDescription = new WeakMap();
     
-    // Function to generate random irregular border-radius (always curved, no straight sides)
+    // Function to generate random irregular border-radius (rectangular bubble with random curves)
     function generateRandomBorderRadius() {
         const values = [];
         for (let i = 0; i < 4; i++) {
-            // Keep values between 45-55% to ensure curves (no straight edges possible)
-            values.push(Math.floor(Math.random() * 10) + 45 + '%'); // 45-55%
+            // Wide range: 5-50% creates irregular shapes (not oval)
+            values.push(Math.floor(Math.random() * 45) + 5 + '%'); // 5-50%
         }
         const values2 = [];
         for (let i = 0; i < 4; i++) {
-            // Keep values between 45-55% to ensure curves (no straight edges possible)
-            values2.push(Math.floor(Math.random() * 10) + 45 + '%'); // 45-55%
+            // Wide range: 5-50% creates irregular shapes (not oval)
+            values2.push(Math.floor(Math.random() * 45) + 5 + '%'); // 5-50%
         }
         return `${values[0]} ${values[1]} ${values[2]} ${values[3]} / ${values2[0]} ${values2[1]} ${values2[2]} ${values2[3]}`;
     }
@@ -252,7 +252,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentPopup) {
             const popup = currentPopup;
             popupToDescription.delete(popup);
-            // Remove border-radius transition so it doesn't morph back to oval
+            // Remove border-radius from transition and lock it at current value to prevent morphing back
+            const currentBorderRadius = popup.style.borderRadius || window.getComputedStyle(popup).borderRadius;
+            popup.style.borderRadius = currentBorderRadius; // Lock it
             popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease';
             popup.classList.remove('show');
             // Match CSS transition duration (0.3s = 300ms)
