@@ -313,11 +313,14 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.appendChild(popup);
             currentPopup = popup;
             
-            // Show popup with animation - start as rectangle, then expand and morph to random wavy shape
-            popup.classList.add('show');
+            // Show popup with animation - start small, then expand to full size
+            // First make it visible (but still small)
+            popup.style.visibility = 'visible';
+            popup.style.opacity = '0';
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, width 0.5s ease-out, height 0.5s ease-out, padding 0.5s ease-out';
+                    // Now add show class to trigger size transition
+                    popup.classList.add('show');
                 });
             });
         });
