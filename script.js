@@ -455,8 +455,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const foDiv = document.createElement('div');
             foDiv.className = 'project-description-popup__content';
             foDiv.textContent = fullDescription;
-            // Ensure font-size is applied directly - use pixels for precise control
-            foDiv.style.fontSize = '10px';
+            // Ensure font-size is applied directly - use very small pixels
+            foDiv.style.fontSize = '6px';
             fo.appendChild(foDiv);
             svg.appendChild(fo);
 
