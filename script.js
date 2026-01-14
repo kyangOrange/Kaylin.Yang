@@ -310,16 +310,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.appendChild(popup);
             currentPopup = popup;
             
-            // Generate random border-radius for blob shape
-            const randomBorderRadius = generateRandomBorderRadius();
-            
-            // Show popup with animation - blob expands to small size
+            // Show popup with animation - dot expands to rectangle
             popup.classList.add('show');
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    popup.style.borderRadius = randomBorderRadius;
-                });
-            });
         });
     });
     
