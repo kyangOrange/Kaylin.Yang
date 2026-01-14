@@ -389,8 +389,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Next button click handler
     if (nextBtn) {
         nextBtn.addEventListener('click', function() {
-            currentIndex = (currentIndex + 1) % paragraphs.length; // Loop back to 0 when reaching the end
-            showParagraph(currentIndex);
+            // Remove active from current paragraph first
+            paragraphs[currentIndex].classList.remove('active');
+            
+            // Update index
+            currentIndex = (currentIndex + 1) % paragraphs.length;
+            
+            // Use requestAnimationFrame to ensure smooth transition
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    paragraphs[currentIndex].classList.add('active');
+                });
+            });
         });
     }
 });
