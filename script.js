@@ -221,13 +221,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function generateRandomBorderRadius() {
         const values = [];
         for (let i = 0; i < 4; i++) {
-            // Keep values between 40-60% to ensure curves (never too extreme)
-            values.push(Math.floor(Math.random() * 20) + 40 + '%'); // 40-60%
+            // Keep values between 45-55% to ensure curves (no straight edges possible)
+            values.push(Math.floor(Math.random() * 10) + 45 + '%'); // 45-55%
         }
         const values2 = [];
         for (let i = 0; i < 4; i++) {
-            // Keep values between 40-60% to ensure curves (never too extreme)
-            values2.push(Math.floor(Math.random() * 20) + 40 + '%'); // 40-60%
+            // Keep values between 45-55% to ensure curves (no straight edges possible)
+            values2.push(Math.floor(Math.random() * 10) + 45 + '%'); // 45-55%
         }
         return `${values[0]} ${values[1]} ${values[2]} ${values[3]} / ${values2[0]} ${values2[1]} ${values2[2]} ${values2[3]}`;
     }
