@@ -350,6 +350,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const nextBtn = document.getElementById('aboutNextBtn');
     let currentIndex = 0;
     
+    // Function to generate random irregular border-radius (always curved, no straight sides)
+    function generateRandomBorderRadius() {
+        const values = [];
+        for (let i = 0; i < 4; i++) {
+            values.push(Math.floor(Math.random() * 20) + 40 + '%'); // 40-60%
+        }
+        const values2 = [];
+        for (let i = 0; i < 4; i++) {
+            values2.push(Math.floor(Math.random() * 20) + 40 + '%'); // 40-60%
+        }
+        return `${values[0]} ${values[1]} ${values[2]} ${values[3]} / ${values2[0]} ${values2[1]} ${values2[2]} ${values2[3]}`;
+    }
+    
+    // Apply random border-radius to button
+    if (nextBtn) {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                nextBtn.style.borderRadius = generateRandomBorderRadius();
+            });
+        });
+    }
+    
     // Function to show paragraph at index
     function showParagraph(index) {
         paragraphs.forEach((para, i) => {
@@ -359,13 +381,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 para.classList.remove('active');
             }
         });
-        
-        // Hide button on last paragraph
-        if (index === paragraphs.length - 1) {
-            nextBtn.style.display = 'none';
-        } else {
-            nextBtn.style.display = 'block';
-        }
     }
     
     // Initialize: show first paragraph
@@ -374,10 +389,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Next button click handler
     if (nextBtn) {
         nextBtn.addEventListener('click', function() {
-            if (currentIndex < paragraphs.length - 1) {
-                currentIndex++;
-                showParagraph(currentIndex);
-            }
+            currentIndex = (currentIndex + 1) % paragraphs.length; // Loop back to 0 when reaching the end
+            showParagraph(currentIndex);
         });
     }
 });
