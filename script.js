@@ -281,10 +281,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return `polygon(${pts.join(', ')})`;
     }
     
-    function generateWavyClipPolygon({ pointsPerSide = 32, maxInsetPct = 6 } = {}) {
+    function generateWavyClipPolygon({ pointsPerSide = 32, maxInsetPct = 4 } = {}) {
         const n = pointsPerSide + 1; // include endpoints
         const randInset = () => Math.random() * maxInsetPct;
-        const makeSideInsets = () => smoothArray(Array.from({ length: n }, randInset), 8);
+        const makeSideInsets = () => smoothArray(Array.from({ length: n }, randInset), 10);
 
         const top = makeSideInsets();
         const right = makeSideInsets();
