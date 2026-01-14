@@ -418,62 +418,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 closePopup();
             }
             
-            // Create new popup
+            // Create new popup - simple rectangle
             const popup = document.createElement('div');
             popup.className = 'project-description-popup';
             popup.setAttribute('role', 'dialog');
             popup.setAttribute('aria-label', 'Project description');
-
-            // Build structure: SVG blob background + text clipped INSIDE the blob.
-            const svg = document.createElementNS(SVG_NS, 'svg');
-            svg.setAttribute('viewBox', '0 0 100 100');
-            svg.setAttribute('preserveAspectRatio', 'none');
-            svg.classList.add('project-description-popup__blob');
-
-            const defs = document.createElementNS(SVG_NS, 'defs');
-            const clipPath = document.createElementNS(SVG_NS, 'clipPath');
-            const clipId = `popupBlobClip-${Math.random().toString(36).slice(2)}`;
-            clipPath.setAttribute('id', clipId);
-            clipPath.setAttribute('clipPathUnits', 'userSpaceOnUse');
-
-            const clipPathPath = document.createElementNS(SVG_NS, 'path');
-            clipPath.appendChild(clipPathPath);
-            defs.appendChild(clipPath);
-            svg.appendChild(defs);
-
-            const fillPath = document.createElementNS(SVG_NS, 'path');
-            fillPath.classList.add('project-description-popup__blob-path');
-            svg.appendChild(fillPath);
-
-            // Safe inset for text so it stays away from the blob edge.
-            // Also clipped by the blob so it can never spill outside visually.
-            const fo = document.createElementNS(SVG_NS, 'foreignObject');
-            fo.classList.add('project-description-popup__fo');
-            fo.setAttribute('clip-path', `url(#${clipId})`);
-            // Set initial position - will be updated after popup expands
-            fo.setAttribute('x', '0');
-            fo.setAttribute('y', '0');
-            fo.setAttribute('width', '100');
-            fo.setAttribute('height', '100');
-
-            const foDiv = document.createElement('div');
-            foDiv.className = 'project-description-popup__content';
-            foDiv.textContent = fullDescription;
-            foDiv.setAttribute('tabindex', '0');
-            fo.appendChild(foDiv);
-            svg.appendChild(fo);
-
-            popup.appendChild(svg);
+            popup.textContent = fullDescription;
             
             // Set background color based on project card
             if (projectCard.classList.contains('project-1')) {
-                popup.style.setProperty('--popup-fill', '#FFF8FA');
+                popup.style.background = '#FFF8FA';
             } else if (projectCard.classList.contains('project-2')) {
-                popup.style.setProperty('--popup-fill', '#FFFDF5');
+                popup.style.background = '#FFFDF5';
             } else if (projectCard.classList.contains('project-3')) {
-                popup.style.setProperty('--popup-fill', '#F5FCFA');
+                popup.style.background = '#F5FCFA';
             } else if (projectCard.classList.contains('project-fill-in-blank')) {
-                popup.style.setProperty('--popup-fill', '#F8FCFF');
+                popup.style.background = '#F8FCFF';
             }
             
             // Store reference
@@ -482,46 +442,13 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.appendChild(popup);
             currentPopup = popup;
             
-            // Show popup with animation - dot expands to blob
-            // Make visible first, then trigger size change
+            // Show popup with animation - dot expands to rectangle
             // Prevent background scrolling when popup is open
             document.body.style.overflow = 'hidden';
             popup.style.visibility = 'visible';
             popup.style.opacity = '1';
             requestAnimationFrame(() => {
                 popup.classList.add('show');
-                // After the popup has a real size, match the SVG viewBox to pixel size
-                // so the text is not scaled/distorted by SVG viewBox transforms.
-                requestAnimationFrame(() => {
-                    const rect = popup.getBoundingClientRect();
-                    const w = Math.max(1, Math.round(rect.width));
-                    const h = Math.max(1, Math.round(rect.height));
-                    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-
-                    // Inset the text area safely inside the blob.
-                    const pad = Math.round(Math.min(w, h) * 0.14);
-                    fo.setAttribute('x', String(pad));
-                    fo.setAttribute('y', String(pad));
-                    fo.setAttribute('width', String(Math.max(1, w - pad * 2)));
-                    fo.setAttribute('height', String(Math.max(1, h - pad * 2)));
-
-                    // Initialize as a near-circle, then morph into a random blob.
-                    const startParams = { baseFrac: 0.46, a1Frac: 0, a2Frac: 0, a3Frac: 0, p1: 0, p2: 0, p3: 0 };
-                    const targetParams = createBlobParams();
-                    const startD = createBlobPathD(64, w, h, startParams);
-                    fillPath.setAttribute('d', startD);
-                    clipPathPath.setAttribute('d', startD);
-
-                    animateBlobPaths([fillPath, clipPathPath], w, h, targetParams, 900);
-
-                    // Ensure scrolling is applied to the text area (some browsers are finicky inside foreignObject).
-                    foDiv.focus({ preventScroll: true });
-                    svg.addEventListener('wheel', (e) => {
-                        // Route wheel scrolling into the text container and prevent page scroll.
-                        foDiv.scrollTop += e.deltaY;
-                        e.preventDefault();
-                    }, { passive: false });
-                });
             });
 
         });

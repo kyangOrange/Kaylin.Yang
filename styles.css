@@ -467,10 +467,10 @@ section {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: transparent;
-    padding: 0;
-    border-radius: 0;
-    box-shadow: none;
+    background: white;
+    padding: 2.5rem 3rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     width: 0.1vw;
     height: 0.1vh;
     max-width: 1400px;
@@ -478,66 +478,29 @@ section {
     z-index: 999;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease, width 1.2s ease-out, height 1.2s ease-out;
-    font-size: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease, width 1.2s ease-out, height 1.2s ease-out, padding 1.2s ease-out;
+    font-size: 1.1rem;
     line-height: 1.8;
     color: var(--text-light);
     pointer-events: auto;
     box-sizing: border-box;
-    overflow: visible;
-    --popup-fill: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Hide scrollbar but keep scrolling functional */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
 }
 
 .project-description-popup.show {
     opacity: 1;
     visibility: visible;
-    width: min(86vw, 1300px);
-    height: min(82vh, 900px);
-}
-
-.project-description-popup__blob {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 10px 40px rgba(0, 0, 0, 0.15));
-}
-
-.project-description-popup__blob-path {
-    fill: var(--popup-fill);
-    pointer-events: none;
-}
-
-/* Text lives inside SVG foreignObject, inset + clipped to blob so it can't spill out */
-.project-description-popup__fo {
-    overflow: visible;
-    font-size: 0;
-    pointer-events: auto;
-}
-
-.project-description-popup__content {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    box-sizing: border-box;
-    padding: 1rem;
-    color: var(--text-light);
-    background: transparent;
-    font-size: 14px !important;
-    line-height: 1.6;
-    pointer-events: auto;
-    /* Help wrapping so nothing overflows */
-    overflow-wrap: anywhere;
-    word-break: break-word;
-    /* Hide scrollbar but keep scrolling functional */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    /* Prevent background scrolling when scrolling inside popup */
-    touch-action: pan-y;
+    width: 60vw;
+    height: 60vh;
+    padding: 2.5rem 3rem;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.project-description-popup__content::-webkit-scrollbar {
+.project-description-popup::-webkit-scrollbar {
     display: none;
 }
 
