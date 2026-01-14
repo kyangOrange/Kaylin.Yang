@@ -429,10 +429,37 @@ section {
 .project-description {
     cursor: pointer;
     transition: opacity 0.2s ease;
+    position: relative;
 }
 
 .project-description:hover {
     opacity: 0.8;
+}
+
+.project-description::after {
+    content: 'Click to expand';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--text-light);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    pointer-events: none;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.project-description:hover::after {
+    opacity: 1;
+    visibility: visible;
 }
 
 .project-description-popup {
