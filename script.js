@@ -260,29 +260,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function createBlobParams() {
-        // Use a few low-frequency sine waves -> long smooth curves, no sharp corners.
+        // Low-frequency waves -> long smooth curves, no sharp corners.
+        // Values are fractions of the base radius.
         return {
-            base: 44,
-            a1: 3 + Math.random() * 3,
-            a2: 2 + Math.random() * 2.5,
-            a3: 1 + Math.random() * 2,
+            baseFrac: 0.46,
+            a1Frac: 0.05 + Math.random() * 0.05,
+            a2Frac: 0.03 + Math.random() * 0.04,
+            a3Frac: 0.02 + Math.random() * 0.03,
             p1: Math.random() * Math.PI * 2,
             p2: Math.random() * Math.PI * 2,
             p3: Math.random() * Math.PI * 2
         };
     }
 
-    function radiiFromParams(n, params) {
+    function radiiFromParams(n, baseR, params) {
         const radii = new Array(n);
         for (let i = 0; i < n; i++) {
             const theta = (i / n) * Math.PI * 2;
             const r =
-                params.base +
-                params.a1 * Math.sin(theta + params.p1) +
-                params.a2 * Math.sin(2 * theta + params.p2) +
-                params.a3 * Math.sin(3 * theta + params.p3);
-            // Keep inside viewBox (0..100): center=50, so radius max must be <= 49.
-            radii[i] = clamp(r, 35, 49);
+                baseR +
+                baseR * params.a1Frac * Math.sin(theta + params.p1) +
+                baseR * params.a2Frac * Math.sin(2 * theta + params.p2) +
+                baseR * params.a3Frac * Math.sin(3 * theta + params.p3);
+            radii[i] = clamp(r, baseR * 0.78, baseR * 1.12);
         }
         return radii;
     }
@@ -326,15 +326,18 @@ document.addEventListener('DOMContentLoaded', function() {
         return d;
     }
 
-    function createBlobPathD(n, params) {
-        const radii = radiiFromParams(n, params);
-        const pts = pointsFromRadii(radii);
+    function createBlobPathD(n, w, h, params) {
+        const cx = w / 2;
+        const cy = h / 2;
+        const baseR = Math.min(w, h) * params.baseFrac;
+        const radii = radiiFromParams(n, baseR, params);
+        const pts = pointsFromRadii(radii, cx, cy);
         return pathFromPoints(pts);
     }
 
-    function animateBlobPaths(pathEls, toParams, durationMs = 900) {
+    function animateBlobPaths(pathEls, w, h, toParams, durationMs = 900) {
         const n = 64;
-        const fromParams = { base: 44, a1: 0, a2: 0, a3: 0, p1: 0, p2: 0, p3: 0 };
+        const fromParams = { baseFrac: 0.46, a1Frac: 0, a2Frac: 0, a3Frac: 0, p1: 0, p2: 0, p3: 0 };
         const start = performance.now();
 
         function setAll(d) {
@@ -345,15 +348,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const t = clamp((now - start) / durationMs, 0, 1);
             const e = easeOutCubic(t);
             const cur = {
-                base: fromParams.base + (toParams.base - fromParams.base) * e,
-                a1: fromParams.a1 + (toParams.a1 - fromParams.a1) * e,
-                a2: fromParams.a2 + (toParams.a2 - fromParams.a2) * e,
-                a3: fromParams.a3 + (toParams.a3 - fromParams.a3) * e,
+                baseFrac: fromParams.baseFrac + (toParams.baseFrac - fromParams.baseFrac) * e,
+                a1Frac: fromParams.a1Frac + (toParams.a1Frac - fromParams.a1Frac) * e,
+                a2Frac: fromParams.a2Frac + (toParams.a2Frac - fromParams.a2Frac) * e,
+                a3Frac: fromParams.a3Frac + (toParams.a3Frac - fromParams.a3Frac) * e,
                 p1: toParams.p1,
                 p2: toParams.p2,
                 p3: toParams.p3
             };
-            setAll(createBlobPathD(n, cur));
+            setAll(createBlobPathD(n, w, h, cur));
             if (t < 1) requestAnimationFrame(frame);
         }
 
@@ -442,21 +445,16 @@ document.addEventListener('DOMContentLoaded', function() {
             fillPath.classList.add('project-description-popup__blob-path');
             svg.appendChild(fillPath);
 
-            // Safe inset for text so it stays away from the wavy edges.
-            // Also clipped by blob so it can never spill outside visually.
+            // Safe inset for text so it stays away from the blob edge.
+            // Also clipped by the blob so it can never spill outside visually.
             const fo = document.createElementNS(SVG_NS, 'foreignObject');
             fo.classList.add('project-description-popup__fo');
-            fo.setAttribute('x', '16');
-            fo.setAttribute('y', '16');
-            fo.setAttribute('width', '68');
-            fo.setAttribute('height', '68');
             fo.setAttribute('clip-path', `url(#${clipId})`);
 
             const foDiv = document.createElement('div');
             foDiv.className = 'project-description-popup__content';
             foDiv.textContent = fullDescription;
-            // Ensure font-size is applied directly - use very small pixels
-            foDiv.style.fontSize = '4px';
+            foDiv.setAttribute('tabindex', '0');
             fo.appendChild(foDiv);
             svg.appendChild(fo);
 
@@ -479,20 +477,46 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.appendChild(popup);
             currentPopup = popup;
             
-            // Initialize as a near-circle, then morph into a random blob while expanding.
-            const startD = createBlobPathD(64, { base: 44, a1: 0, a2: 0, a3: 0, p1: 0, p2: 0, p3: 0 });
-            const targetParams = createBlobParams();
-            fillPath.setAttribute('d', startD);
-            clipPathPath.setAttribute('d', startD);
-            
             // Show popup with animation - dot expands to blob
             // Make visible first, then trigger size change
+            // Prevent background scrolling when popup is open
+            document.body.style.overflow = 'hidden';
             popup.style.visibility = 'visible';
             popup.style.opacity = '1';
             requestAnimationFrame(() => {
                 popup.classList.add('show');
-                // Morph path (smooth curves) while it expands.
-                animateBlobPaths([fillPath, clipPathPath], targetParams, 900);
+                // After the popup has a real size, match the SVG viewBox to pixel size
+                // so the text is not scaled/distorted by SVG viewBox transforms.
+                requestAnimationFrame(() => {
+                    const rect = popup.getBoundingClientRect();
+                    const w = Math.max(1, Math.round(rect.width));
+                    const h = Math.max(1, Math.round(rect.height));
+                    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+                    // Inset the text area safely inside the blob.
+                    const pad = Math.round(Math.min(w, h) * 0.14);
+                    fo.setAttribute('x', String(pad));
+                    fo.setAttribute('y', String(pad));
+                    fo.setAttribute('width', String(Math.max(1, w - pad * 2)));
+                    fo.setAttribute('height', String(Math.max(1, h - pad * 2)));
+
+                    // Initialize as a near-circle, then morph into a random blob.
+                    const startParams = { baseFrac: 0.46, a1Frac: 0, a2Frac: 0, a3Frac: 0, p1: 0, p2: 0, p3: 0 };
+                    const targetParams = createBlobParams();
+                    const startD = createBlobPathD(64, w, h, startParams);
+                    fillPath.setAttribute('d', startD);
+                    clipPathPath.setAttribute('d', startD);
+
+                    animateBlobPaths([fillPath, clipPathPath], w, h, targetParams, 900);
+
+                    // Ensure scrolling is applied to the text area (some browsers are finicky inside foreignObject).
+                    foDiv.focus({ preventScroll: true });
+                    svg.addEventListener('wheel', (e) => {
+                        // Route wheel scrolling into the text container and prevent page scroll.
+                        foDiv.scrollTop += e.deltaY;
+                        e.preventDefault();
+                    }, { passive: false });
+                });
             });
 
         });
