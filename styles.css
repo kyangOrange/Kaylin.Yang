@@ -463,30 +463,34 @@ section {
 }
 
 .project-description-popup {
-    position: absolute;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
     background: white;
-    padding: 2rem 2.5rem;
+    padding: 3rem 4rem;
     border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    max-width: 400px;
-    min-width: 250px;
-    width: max-content;
+    width: 90vw;
+    height: 90vh;
+    max-width: 1400px;
+    max-height: 800px;
     z-index: 999;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease, border-radius 0.6s ease-out;
-    transform: translateY(-10px) scale(0.8);
-    font-size: 0.95rem;
+    transition: opacity 0.3s ease, visibility 0.3s ease, border-radius 0.6s ease-out, transform 0.3s ease;
+    font-size: 1.1rem;
     line-height: 1.8;
     color: var(--text-light);
     pointer-events: auto;
     box-sizing: border-box;
+    overflow-y: auto;
 }
 
 .project-description-popup.show {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0) scale(1);
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .project-links {

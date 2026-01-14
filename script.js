@@ -305,25 +305,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Store reference
             popupToDescription.set(popup, this);
             
-            // Position popup next to the project card
-            const cardRect = projectCard.getBoundingClientRect();
-            const descriptionRect = this.getBoundingClientRect();
-            const scrollY = window.scrollY;
-            const scrollX = window.scrollX;
-            
-            // Position to the right of the card, or left if there's not enough space
-            const spaceRight = window.innerWidth - cardRect.right;
-            const spaceLeft = cardRect.left;
-            
-            if (spaceRight >= 320 || spaceRight > spaceLeft) {
-                popup.style.left = (cardRect.right + scrollX + 20) + 'px';
-                popup.style.top = (descriptionRect.top + scrollY - 10) + 'px';
-            } else {
-                popup.style.left = (cardRect.left + scrollX - 20) + 'px';
-                popup.style.top = (descriptionRect.top + scrollY - 10) + 'px';
-                popup.style.right = 'auto';
-            }
-            
             document.body.appendChild(popup);
             currentPopup = popup;
             
