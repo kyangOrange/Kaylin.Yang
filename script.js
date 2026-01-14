@@ -424,10 +424,11 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.setAttribute('role', 'dialog');
             popup.setAttribute('aria-label', 'Project description');
             // Convert text to paragraphs with extra spacing
+            // Handle HTML formatting (like <strong> tags)
             const paragraphs = fullDescription.split('\n\n').filter(p => p.trim());
             paragraphs.forEach((para, index) => {
                 const p = document.createElement('p');
-                p.textContent = para.trim();
+                p.innerHTML = para.trim(); // Use innerHTML to preserve <strong> tags
                 popup.appendChild(p);
             });
             
