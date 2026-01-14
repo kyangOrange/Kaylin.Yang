@@ -504,6 +504,37 @@ section {
     display: none;
 }
 
+.project-description-popup__close {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    line-height: 1;
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 1000;
+    padding: 0;
+}
+
+.project-description-popup__close:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.project-description-popup__close:active {
+    transform: scale(0.95);
+}
+
 .project-links {
     display: flex;
     gap: 1rem;

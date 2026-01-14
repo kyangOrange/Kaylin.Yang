@@ -425,6 +425,17 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.setAttribute('aria-label', 'Project description');
             popup.textContent = fullDescription;
             
+            // Create close button
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'project-description-popup__close';
+            closeBtn.setAttribute('aria-label', 'Close');
+            closeBtn.innerHTML = '×';
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closePopup();
+            });
+            popup.appendChild(closeBtn);
+            
             // Set background color based on project card
             if (projectCard.classList.contains('project-1')) {
                 popup.style.background = '#FFF8FA';
