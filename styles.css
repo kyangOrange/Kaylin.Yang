@@ -22,7 +22,7 @@ html {
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-family: 'Courier New', monospace;
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--bg-color);
@@ -227,6 +227,7 @@ section {
 .section-title {
     font-size: 2.5rem;
     font-weight: 700;
+    font-family: 'Papyrus', fantasy;
     text-align: center;
     margin-bottom: 3rem;
     color: var(--text-color);
@@ -270,6 +271,7 @@ section {
 }
 
 .skill-card h3 {
+    font-family: 'Papyrus', fantasy;
     color: #4908C2;
     margin-bottom: 1rem;
     font-size: 1.5rem;
@@ -365,6 +367,7 @@ section {
 }
 
 .project-content h3 {
+    font-family: 'Bradley Hand', cursive;
     color: var(--text-color);
     margin-bottom: 0.5rem;
     font-size: 1.5rem;
