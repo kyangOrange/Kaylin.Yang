@@ -293,9 +293,6 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.className = 'project-description-popup';
             popup.textContent = fullDescription;
             
-            // Generate random smooth border-radius (will be applied after initial render)
-            const randomBorderRadius = generateRandomBorderRadius();
-            
             // Set background color based on project card
             if (projectCard.classList.contains('project-1')) {
                 popup.style.background = '#FFF8FA';
@@ -313,8 +310,16 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.appendChild(popup);
             currentPopup = popup;
             
-            // Show popup with animation - start small, then expand to full size
+            // Generate random border-radius for blob shape
+            const randomBorderRadius = generateRandomBorderRadius();
+            
+            // Show popup with animation - blob expands to small size
             popup.classList.add('show');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    popup.style.borderRadius = randomBorderRadius;
+                });
+            });
         });
     });
     
