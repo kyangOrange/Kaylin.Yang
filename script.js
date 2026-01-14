@@ -218,6 +218,15 @@ document.addEventListener('DOMContentLoaded', function() {
         textFadeObserver.observe(el);
     });
     
+    // Observe about-content container for fade-in (special handling for about section)
+    const aboutContent = document.querySelector('.about-content');
+    if (aboutContent) {
+        aboutContent.style.opacity = '0';
+        aboutContent.style.transform = 'translateY(20px)';
+        aboutContent.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        textFadeObserver.observe(aboutContent);
+    }
+    
     // Project description popup functionality
     const projectDescriptions = document.querySelectorAll('.project-description');
     let currentPopup = null;
