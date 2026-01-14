@@ -423,6 +423,11 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.className = 'project-description-popup';
             popup.setAttribute('role', 'dialog');
             popup.setAttribute('aria-label', 'Project description');
+            
+            // Create scrollable content wrapper
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'project-description-popup__content';
+            
             // Convert text to paragraphs with extra spacing
             // Handle HTML formatting (like <strong> tags)
             const paragraphs = fullDescription.split('\n\n').filter(p => p.trim());
@@ -432,10 +437,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Add line break after <strong> tags that end with colon
                 content = content.replace(/<strong>([^<]+):<\/strong>/g, '<strong>$1:</strong><br>');
                 p.innerHTML = content; // Use innerHTML to preserve <strong> tags
-                popup.appendChild(p);
+                contentWrapper.appendChild(p);
             });
+            popup.appendChild(contentWrapper);
             
-            // Create close button
+            // Create close button (outside content wrapper so it stays fixed)
             const closeBtn = document.createElement('button');
             closeBtn.className = 'project-description-popup__close';
             closeBtn.setAttribute('aria-label', 'Close');
