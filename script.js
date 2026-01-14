@@ -233,40 +233,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const popupToDescription = new WeakMap();
     
     // Function to generate random irregular border-radius (curves everywhere, no vertical lines, not too big)
-    // Function to generate random wavy clip-path with curves on all sides
-    function generateRandomWavyClipPath() {
-        const numPointsPerSide = 8; // More points = more curves
-        const points = [];
-        
-        // Top side: left to right, curves in/out
-        for (let i = 0; i <= numPointsPerSide; i++) {
-            const x = (i / numPointsPerSide) * 100;
-            const yVariation = (Math.random() - 0.5) * 15; // Random curve: -7.5% to +7.5%
-            points.push(`${x}% ${yVariation}%`);
+    // Function to generate smooth border-radius that creates smooth curves (not oval)
+    function generateRandomBorderRadius() {
+        const values = [];
+        for (let i = 0; i < 4; i++) {
+            // Range: 20-35% creates smooth curves that expand outward, not too large/oval
+            values.push(Math.floor(Math.random() * 15) + 20 + '%'); // 20-35%
         }
-        
-        // Right side: top to bottom, curves in/out
-        for (let i = 1; i <= numPointsPerSide; i++) {
-            const y = (i / numPointsPerSide) * 100;
-            const xVariation = 100 + (Math.random() - 0.5) * 15; // Random curve: -7.5% to +7.5%
-            points.push(`${xVariation}% ${y}%`);
+        const values2 = [];
+        for (let i = 0; i < 4; i++) {
+            // Range: 20-35% creates smooth curves that expand outward, not too large/oval
+            values2.push(Math.floor(Math.random() * 15) + 20 + '%'); // 20-35%
         }
-        
-        // Bottom side: right to left, curves in/out
-        for (let i = numPointsPerSide - 1; i >= 0; i--) {
-            const x = (i / numPointsPerSide) * 100;
-            const yVariation = 100 + (Math.random() - 0.5) * 15; // Random curve: -7.5% to +7.5%
-            points.push(`${x}% ${yVariation}%`);
-        }
-        
-        // Left side: bottom to top, curves in/out
-        for (let i = numPointsPerSide - 1; i > 0; i--) {
-            const y = (i / numPointsPerSide) * 100;
-            const xVariation = (Math.random() - 0.5) * 15; // Random curve: -7.5% to +7.5%
-            points.push(`${xVariation}% ${y}%`);
-        }
-        
-        return `polygon(${points.join(', ')})`;
+        return `${values[0]} ${values[1]} ${values[2]} ${values[3]} / ${values2[0]} ${values2[1]} ${values2[2]} ${values2[3]}`;
     }
     
     // Function to close popup
@@ -274,9 +253,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentPopup) {
             const popup = currentPopup;
             popupToDescription.delete(popup);
-            // Lock clip-path at current value to prevent any morphing
-            const currentClipPath = popup.style.clipPath || window.getComputedStyle(popup).clipPath;
-            popup.style.clipPath = currentClipPath; // Lock clip-path
+            // Lock border-radius at current value to prevent any morphing
+            const currentBorderRadius = popup.style.borderRadius || window.getComputedStyle(popup).borderRadius;
+            popup.style.borderRadius = currentBorderRadius; // Lock border-radius
             popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
             popup.classList.remove('show');
             // Match CSS transition duration (0.3s = 300ms)
@@ -314,8 +293,8 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.className = 'project-description-popup';
             popup.textContent = fullDescription;
             
-            // Generate random wavy clip-path (will be applied after initial render)
-            const randomClipPath = generateRandomWavyClipPath();
+            // Generate random smooth border-radius (will be applied after initial render)
+            const randomBorderRadius = generateRandomBorderRadius();
             
             // Set background color based on project card
             if (projectCard.classList.contains('project-1')) {
@@ -338,8 +317,8 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.classList.add('show');
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, clip-path 0.5s ease-out, width 0.5s ease-out, height 0.5s ease-out, padding 0.5s ease-out';
-                    popup.style.clipPath = randomClipPath;
+                    popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, border-radius 0.5s ease-out, width 0.5s ease-out, height 0.5s ease-out, padding 0.5s ease-out';
+                    popup.style.borderRadius = randomBorderRadius;
                 });
             });
         });
