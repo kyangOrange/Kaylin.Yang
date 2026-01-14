@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.appendChild(popup);
             currentPopup = popup;
             
-            // Show popup with animation - start circular, then morph to random shape
+            // Show popup with animation - start as square, then morph to random irregular shape
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     popup.style.borderRadius = randomBorderRadius;
