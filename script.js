@@ -450,6 +450,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const fo = document.createElementNS(SVG_NS, 'foreignObject');
             fo.classList.add('project-description-popup__fo');
             fo.setAttribute('clip-path', `url(#${clipId})`);
+            // Set initial position - will be updated after popup expands
+            fo.setAttribute('x', '0');
+            fo.setAttribute('y', '0');
+            fo.setAttribute('width', '100');
+            fo.setAttribute('height', '100');
 
             const foDiv = document.createElement('div');
             foDiv.className = 'project-description-popup__content';
