@@ -232,17 +232,17 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentPopup = null;
     const popupToDescription = new WeakMap();
     
-    // Function to generate random irregular border-radius (rectangular bubble with subtle uneven curves, not oval)
+    // Function to generate random irregular border-radius (curves everywhere, no vertical lines, not too big)
     function generateRandomBorderRadius() {
         const values = [];
         for (let i = 0; i < 4; i++) {
-            // Range: 15-30% creates subtle curves, not oval
-            values.push(Math.floor(Math.random() * 15) + 15 + '%'); // 15-30%
+            // Range: 30-40% ensures curves extend along edges, no straight vertical/horizontal lines
+            values.push(Math.floor(Math.random() * 10) + 30 + '%'); // 30-40%
         }
         const values2 = [];
         for (let i = 0; i < 4; i++) {
-            // Range: 15-30% creates subtle curves, not oval
-            values2.push(Math.floor(Math.random() * 15) + 15 + '%'); // 15-30%
+            // Range: 30-40% ensures curves extend along edges, no straight vertical/horizontal lines
+            values2.push(Math.floor(Math.random() * 10) + 30 + '%'); // 30-40%
         }
         return `${values[0]} ${values[1]} ${values[2]} ${values[3]} / ${values2[0]} ${values2[1]} ${values2[2]} ${values2[3]}`;
     }
