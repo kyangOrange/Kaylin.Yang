@@ -415,11 +415,12 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.style.clipPath = rectangularClip;
             
             // After the rectangle expansion finishes, morph the rectangle edges into smooth random curves on all sides.
-            const wavyClip = generateWavyClipPolygon({ pointsPerSide: 32, maxInsetPct: 6 });
+            const wavyClip = generateWavyClipPolygon({ pointsPerSide: 32, maxInsetPct: 5 });
             setTimeout(() => {
                 if (currentPopup !== popup) return;
                 popup.style.clipPath = wavyClip;
             }, 1250);
+
         });
     });
     
