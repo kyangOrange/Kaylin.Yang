@@ -233,18 +233,40 @@ document.addEventListener('DOMContentLoaded', function() {
     const popupToDescription = new WeakMap();
     
     // Function to generate random irregular border-radius (curves everywhere, no vertical lines, not too big)
-    function generateRandomBorderRadius() {
-        const values = [];
-        for (let i = 0; i < 4; i++) {
-            // Range: 30-40% ensures curves extend along edges, no straight vertical/horizontal lines
-            values.push(Math.floor(Math.random() * 10) + 30 + '%'); // 30-40%
+    // Function to generate random wavy clip-path with curves on all sides
+    function generateRandomWavyClipPath() {
+        const numPointsPerSide = 8; // More points = more curves
+        const points = [];
+        
+        // Top side: left to right, curves in/out
+        for (let i = 0; i <= numPointsPerSide; i++) {
+            const x = (i / numPointsPerSide) * 100;
+            const yVariation = (Math.random() - 0.5) * 15; // Random curve: -7.5% to +7.5%
+            points.push(`${x}% ${yVariation}%`);
         }
-        const values2 = [];
-        for (let i = 0; i < 4; i++) {
-            // Range: 30-40% ensures curves extend along edges, no straight vertical/horizontal lines
-            values2.push(Math.floor(Math.random() * 10) + 30 + '%'); // 30-40%
+        
+        // Right side: top to bottom, curves in/out
+        for (let i = 1; i <= numPointsPerSide; i++) {
+            const y = (i / numPointsPerSide) * 100;
+            const xVariation = 100 + (Math.random() - 0.5) * 15; // Random curve: -7.5% to +7.5%
+            points.push(`${xVariation}% ${y}%`);
         }
-        return `${values[0]} ${values[1]} ${values[2]} ${values[3]} / ${values2[0]} ${values2[1]} ${values2[2]} ${values2[3]}`;
+        
+        // Bottom side: right to left, curves in/out
+        for (let i = numPointsPerSide - 1; i >= 0; i--) {
+            const x = (i / numPointsPerSide) * 100;
+            const yVariation = 100 + (Math.random() - 0.5) * 15; // Random curve: -7.5% to +7.5%
+            points.push(`${x}% ${yVariation}%`);
+        }
+        
+        // Left side: bottom to top, curves in/out
+        for (let i = numPointsPerSide - 1; i > 0; i--) {
+            const y = (i / numPointsPerSide) * 100;
+            const xVariation = (Math.random() - 0.5) * 15; // Random curve: -7.5% to +7.5%
+            points.push(`${xVariation}% ${y}%`);
+        }
+        
+        return `polygon(${points.join(', ')})`;
     }
     
     // Function to close popup
@@ -312,12 +334,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.appendChild(popup);
             currentPopup = popup;
             
-            // Show popup with animation - start as rectangle, then expand and morph to random irregular shape
+            // Show popup with animation - start as rectangle, then expand and morph to random wavy shape
             popup.classList.add('show');
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, border-radius 0.5s ease-out, transform 0.5s ease-out';
-                    popup.style.borderRadius = randomBorderRadius;
+                    popup.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, clip-path 0.5s ease-out, width 0.5s ease-out, height 0.5s ease-out, padding 0.5s ease-out';
+                    popup.style.clipPath = randomClipPath;
                 });
             });
         });
