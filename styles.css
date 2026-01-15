@@ -519,9 +519,7 @@ section {
 }
 
 .project-description-popup__content p strong {
-    color: #4908C2;
-    font-family: 'Papyrus', fantasy;
-    font-weight: 700;
+    font-weight: bold;
 }
 
 .project-description-popup__content p mark {
