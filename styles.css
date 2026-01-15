@@ -522,6 +522,10 @@ section {
     font-weight: bold;
 }
 
+.project-description-popup__content p .description-header {
+    color: #4908C2;
+}
+
 .project-description-popup__content p mark {
     background-color: #ffeb3b;
     padding: 0.1em 0.2em;
