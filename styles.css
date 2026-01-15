@@ -524,6 +524,11 @@ section {
     font-weight: 700;
 }
 
+.project-description-popup__content p mark {
+    background-color: #ffeb3b;
+    padding: 0.1em 0.2em;
+}
+
 .project-description-popup__close {
     position: absolute;
     bottom: 1.5rem;
