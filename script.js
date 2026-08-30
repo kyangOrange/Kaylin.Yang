@@ -166,33 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         heroObserver.observe(heroSection);
     }
-    
-    // Typewriter effect for section titles on scroll (repeats when scrolling back up)
-    const sectionTitles = document.querySelectorAll('.section-title');
-    const titleTexts = new Map();
-    
-    // Store original text for each title
-    sectionTitles.forEach(title => {
-        titleTexts.set(title, title.textContent);
-    });
-    
-    const sectionTitleObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const originalText = titleTexts.get(entry.target);
-                if (originalText) {
-                    entry.target.textContent = '';
-                    typeWriter(entry.target, originalText, 75);
-                }
-            }
-        });
-    }, { threshold: 0.5 });
-
-    // Observe all section titles
-    sectionTitles.forEach(title => {
-        title.textContent = ''; // Clear initially
-        sectionTitleObserver.observe(title);
-    });
 });
 
 
