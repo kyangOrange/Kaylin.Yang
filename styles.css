@@ -429,8 +429,9 @@ section {
 
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 360px));
+    gap: 1.5rem;
+    justify-content: center;
 }
 
 .project-card {
@@ -440,6 +441,7 @@ section {
     overflow: hidden;
     box-shadow: var(--shadow);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
 }
 
 .project-tag {
@@ -463,7 +465,7 @@ section {
 
 .project-image {
     width: 100%;
-    height: 200px;
+    height: 160px;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     display: flex;
     align-items: center;
@@ -819,12 +821,10 @@ section {
         height: 3rem;
     }
 
-    .projects-grid {
-        grid-template-columns: 1fr;
-    }
-
+    .projects-grid,
     .writing-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 360px);
+        justify-content: center;
     }
 
     .skills-grid {
