@@ -71,7 +71,7 @@ body {
 .nav-menu {
     display: flex;
     list-style: none;
-    gap: 2rem;
+    gap: 1.35rem;
 }
 
 .nav-menu a {
@@ -262,7 +262,7 @@ section {
     padding: 0;
     border: none;
     background: transparent;
-    color: #4908C2;
+    color: #b0b7c3;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -276,7 +276,7 @@ section {
 }
 
 .about-arrow:hover {
-    color: #350690;
+    color: #8b93a1;
     transform: scale(1.12);
 }
 
@@ -300,6 +300,76 @@ section {
     opacity: 1;
     visibility: visible;
     position: relative;
+}
+
+/* Blogs & Essays */
+.writing-intro {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 1.05rem;
+    max-width: 680px;
+    margin: -1.5rem auto 2.5rem;
+    line-height: 1.7;
+}
+
+.essays {
+    background: var(--bg-light);
+}
+
+.writing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.writing-card {
+    background: white;
+    padding: 1.75rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.writing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.writing-tag {
+    align-self: flex-start;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4908C2;
+    background: #FAF7FF;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+}
+
+.writing-card h3 {
+    font-family: 'Papyrus', fantasy;
+    font-size: 1.4rem;
+    color: var(--text-color);
+}
+
+.writing-card p {
+    color: var(--text-light);
+    line-height: 1.7;
+    flex: 1;
+}
+
+.writing-link {
+    color: #4908C2;
+    text-decoration: none;
+    font-weight: 600;
+    width: fit-content;
+    transition: color 0.2s ease;
+}
+
+.writing-link:hover {
+    color: #6b7280;
 }
 
 /* Skills Section */
@@ -741,6 +811,10 @@ section {
     }
 
     .projects-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .writing-grid {
         grid-template-columns: 1fr;
     }
 
