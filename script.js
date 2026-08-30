@@ -479,32 +479,11 @@ document.addEventListener('DOMContentLoaded', function() {
 // About section paragraph navigation
 document.addEventListener('DOMContentLoaded', function() {
     const paragraphs = document.querySelectorAll('.about-paragraph');
+    const prevBtn = document.getElementById('aboutPrevBtn');
     const nextBtn = document.getElementById('aboutNextBtn');
     let currentIndex = 0;
-    
-    // Function to generate random irregular border-radius (always curved, no straight sides)
-    function generateRandomBorderRadius() {
-        const values = [];
-        for (let i = 0; i < 4; i++) {
-            values.push(Math.floor(Math.random() * 20) + 40 + '%'); // 40-60%
-        }
-        const values2 = [];
-        for (let i = 0; i < 4; i++) {
-            values2.push(Math.floor(Math.random() * 20) + 40 + '%'); // 40-60%
-        }
-        return `${values[0]} ${values[1]} ${values[2]} ${values[3]} / ${values2[0]} ${values2[1]} ${values2[2]} ${values2[3]}`;
-    }
-    
-    // Apply random border-radius to button
-    if (nextBtn) {
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                nextBtn.style.borderRadius = generateRandomBorderRadius();
-            });
-        });
-    }
-    
-    // Function to show paragraph at index
+    let isAnimating = false;
+
     function showParagraph(index) {
         paragraphs.forEach((para, i) => {
             if (i === index) {
@@ -514,23 +493,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
-    // Initialize: show first paragraph
+
+    function goTo(newIndex) {
+        if (!paragraphs.length || isAnimating) return;
+        const nextIndex = (newIndex + paragraphs.length) % paragraphs.length;
+        if (nextIndex === currentIndex) return;
+
+        isAnimating = true;
+        paragraphs[currentIndex].classList.remove('active');
+        currentIndex = nextIndex;
+
+        setTimeout(() => {
+            paragraphs[currentIndex].classList.add('active');
+            isAnimating = false;
+        }, 500);
+    }
+
     showParagraph(0);
-    
-    // Next button click handler
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+            goTo(currentIndex - 1);
+        });
+    }
+
     if (nextBtn) {
         nextBtn.addEventListener('click', function() {
-            // Remove active from current paragraph first
-            paragraphs[currentIndex].classList.remove('active');
-            
-            // Update index
-            currentIndex = (currentIndex + 1) % paragraphs.length;
-            
-            // Wait for transition to complete (500ms) before showing next paragraph
-            setTimeout(() => {
-                paragraphs[currentIndex].classList.add('active');
-            }, 500);
+            goTo(currentIndex + 1);
         });
     }
 });
