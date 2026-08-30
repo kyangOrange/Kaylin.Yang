@@ -312,14 +312,22 @@ section {
     line-height: 1.7;
 }
 
+.writing-empty {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 1rem;
+    margin: 0 auto;
+}
+
 .essays {
     background: var(--bg-light);
 }
 
 .writing-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 360px));
     gap: 1.5rem;
+    justify-content: center;
 }
 
 .writing-card {
@@ -331,6 +339,7 @@ section {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    width: 100%;
 }
 
 .writing-card:hover {
